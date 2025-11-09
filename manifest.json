@@ -1,12 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "YouTube – Force Original Audio + Full Reload",
+  "name": "YT Mega Control",
   "version": "1.0",
-  "description": "Switches to original audio and reloads the tab every time.",
+  "description": "Forces original audio + full tab reload on every dubbed YouTube video.",
   "permissions": [],
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
     "js": ["content.js"],
     "run_at": "document_end"
-  }]
+  }],
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
 }
