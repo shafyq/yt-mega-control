@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YT Mega Control",
   "version": "1.0",
-  "description": "Forces original audio + full tab reload on every dubbed YouTube video.",
+  "description": "Selects original audio and reloads once only if needed. No loops.",
   "permissions": [],
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
