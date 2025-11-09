@@ -1,11 +1,11 @@
 (() => {
-  let processed = new Set();               // URL → already handled
-  const currentUrl = () => location.pathname + location.search;
+  const processed = new Set();
+  const getVideoKey = () => location.pathname + location.search;
 
   const forceOriginalAndReload = () => {
-    const urlKey = currentUrl();
-    if (processed.has(urlKey)) return;     // already done for this video
-    processed.add(urlKey);
+    const key = getVideoKey();
+    if (processed.has(key)) return;
+    processed.add(key);
 
     const player = document.querySelector('#movie_player');
     if (!player) return;
@@ -13,32 +13,27 @@
     const settingsBtn = player.querySelector('.ytp-settings-button');
     if (!settingsBtn) return;
 
-    // ---- 1. Open Settings ----
+    // 1. Open settings
     settingsBtn.click();
 
     setTimeout(() => {
-      // ---- 2. Click "Audio track" ----
-      const audioItem = Array.from(
-        document.querySelectorAll('.ytp-panel-menu .ytp-menuitem')
-      ).find(i => /audio\s*track/i.test(i.textContent));
+      const audioItem = Array.from(document.querySelectorAll('.ytp-panel-menu .ytp-menuitem'))
+        .find(i => /audio\s*track/i.test(i.textContent));
 
       if (!audioItem) { closeMenu(); return; }
       audioItem.click();
 
       setTimeout(() => {
-        // ---- 3. Click "Original" ----
-        const original = Array.from(
-          document.querySelectorAll('.ytp-panel-menu .ytp-menuitem')
-        ).find(i => {
-          const txt = (i.querySelector('.ytp-menuitem-label')?.textContent || '').toLowerCase();
-          return txt.includes('original');
-        });
+        const original = Array.from(document.querySelectorAll('.ytp-panel-menu .ytp-menuitem'))
+          .find(i => {
+            const label = i.querySelector('.ytp-menuitem-label')?.textContent || '';
+            return /original/i.test(label);
+          });
 
         if (original) {
           original.click();
-          console.log('Original audio selected → full reload');
-          // ---- 4. FULL TAB RELOAD ----
-          location.reload();          // <-- THIS IS THE ONLY RELOAD
+          console.log('YT Mega Control: Original audio selected → full reload');
+          location.reload();  // FULL TAB REFRESH
         } else {
           closeMenu();
         }
@@ -51,7 +46,7 @@
     if (btn && btn.getAttribute('aria-expanded') === 'true') btn.click();
   };
 
-  // ---- Wait for player (watch page or Shorts) ----
+  // Wait for player
   const start = () => {
     const check = setInterval(() => {
       if (document.querySelector('#movie_player')) {
@@ -61,16 +56,16 @@
     }, 400);
   };
 
-  // ---- SPA navigation (next video, Shorts, etc.) ----
-  let last = currentUrl();
+  // SPA navigation
+  let lastKey = getVideoKey();
   new MutationObserver(() => {
-    const now = currentUrl();
-    if (now !== last) {
-      last = now;
-      start();                 // new video → run again
+    const now = getVideoKey();
+    if (now !== lastKey) {
+      lastKey = now;
+      start();
     }
   }).observe(document.body, { childList: true, subtree: true });
 
-  // ---- Initial run ----
+  // Initial run
   start();
 })();
