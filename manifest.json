@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube – Force Original Audio + Full Reload",
+  "version": "1.0",
+  "description": "Switches to original audio and reloads the tab every time.",
+  "permissions": [],
+  "content_scripts": [{
+    "matches": ["*://www.youtube.com/*"],
+    "js": ["content.js"],
+    "run_at": "document_end"
+  }]
+}
